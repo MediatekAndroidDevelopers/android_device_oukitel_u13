@@ -218,8 +218,11 @@ set_speaker_light_locked(struct light_device_t* dev,
     blink = onMS > 0 && offMS > 0;
 
     write_int(RED_LED_FILE, 0);
+    write_str(RED_TRIGGER_FILE, "none");
     write_int(GREEN_LED_FILE, 0);
+    write_str(GREEN_TRIGGER_FILE, "none");
     write_int(BLUE_LED_FILE, 0);
+    write_str(BLUE_TRIGGER_FILE, "none");
 
     if (blink) {
         if (red >= 128) {
@@ -242,15 +245,12 @@ set_speaker_light_locked(struct light_device_t* dev,
     }
     else {
         if (red >= 128) {
-            write_str(RED_TRIGGER_FILE, "none");
             write_int(RED_LED_FILE, 255);
         }
         if (green >= 128) {
-            write_str(GREEN_TRIGGER_FILE, "none");
             write_int(GREEN_LED_FILE, 255);
         }
         if (blue >= 128) {
-            write_str(BLUE_TRIGGER_FILE, "none");
             write_int(BLUE_LED_FILE, 255);
         }
     }
