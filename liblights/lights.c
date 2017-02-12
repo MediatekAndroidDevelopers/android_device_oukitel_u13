@@ -40,14 +40,44 @@ static struct light_state_t g_attention;
 static struct light_state_t g_notification;
 static struct light_state_t g_battery;
 
+/* Red LED */
 char const*const RED_LED_FILE
         = "/sys/class/leds/red/brightness";
 
+char const*const RED_TRIGGER_FILE
+        = "/sys/class/leds/red/trigger";
+
+char const*const RED_DELAY_ON_FILE
+        = "/sys/class/leds/red/delay_on";
+
+char const*const RED_DELAY_OFF_FILE
+        = "/sys/class/leds/red/delay_off";
+
+/* Green LED */
 char const*const GREEN_LED_FILE
         = "/sys/class/leds/green/brightness";
 
+char const*const GREEN_TRIGGER_FILE
+        = "/sys/class/leds/green/trigger";
+
+char const*const GREEN_DELAY_ON_FILE
+        = "/sys/class/leds/green/delay_on";
+
+char const*const GREEN_DELAY_OFF_FILE
+        = "/sys/class/leds/green/delay_off";
+
+/* Blue LED */
 char const*const BLUE_LED_FILE
         = "/sys/class/leds/blue/brightness";
+
+char const*const BLUE_TRIGGER_FILE
+        = "/sys/class/leds/blue/trigger";
+
+char const*const BLUE_DELAY_ON_FILE
+        = "/sys/class/leds/blue/delay_on";
+
+char const*const BLUE_DELAY_OFF_FILE
+        = "/sys/class/leds/blue/delay_off";
 
 char const*const LCD_FILE
         = "/sys/class/leds/lcd-backlight/brightness";
@@ -75,6 +105,28 @@ write_int(char const* path, int value)
     if (fd >= 0) {
         char buffer[20];
         int bytes = snprintf(buffer, sizeof(buffer), "%d\n", value);
+        ssize_t amt = write(fd, buffer, (size_t)bytes);
+        close(fd);
+        return amt == -1 ? -errno : 0;
+    } else {
+        if (already_warned == 0) {
+            ALOGE("write_int failed to open %s\n", path);
+            already_warned = 1;
+        }
+        return -errno;
+    }
+}
+
+static int
+write_str(char const* path, char *str)
+{
+    int fd;
+    static int already_warned = 0;
+
+    fd = open(path, O_RDWR);
+    if (fd >= 0) {
+        char buffer[20];
+        int bytes = snprintf(buffer, sizeof(buffer), "%s\n", str);
         ssize_t amt = write(fd, buffer, (size_t)bytes);
         close(fd);
         return amt == -1 ? -errno : 0;
@@ -171,23 +223,34 @@ set_speaker_light_locked(struct light_device_t* dev,
 
     if (blink) {
         if (red >= 128) {
-            write_int(RED_LED_FILE, 128);
+            write_str(RED_TRIGGER_FILE, "timer");
+            write_int(RED_DELAY_ON_FILE, onMS);
+            write_int(RED_DELAY_OFF_FILE, offMS);
         }
-        if (green >= 128) {
-            write_int(GREEN_LED_FILE, 128);
+        // disable mixing green with blue or/and red
+        // green led isn't blinking in sync with blue and red
+        if (green >= 128 && red < 128 && blue < 128) { 
+            write_str(GREEN_TRIGGER_FILE, "timer");
+            write_int(GREEN_DELAY_ON_FILE, onMS);
+            write_int(GREEN_DELAY_OFF_FILE, offMS);
         }
         if (blue >= 128) {
-            write_int(BLUE_LED_FILE, 128);
+            write_str(BLUE_TRIGGER_FILE, "timer");
+            write_int(BLUE_DELAY_ON_FILE, onMS);
+            write_int(BLUE_DELAY_OFF_FILE, offMS);
         }
     }
     else {
         if (red >= 128) {
+            write_str(RED_TRIGGER_FILE, "none");
             write_int(RED_LED_FILE, 255);
         }
         if (green >= 128) {
+            write_str(GREEN_TRIGGER_FILE, "none");
             write_int(GREEN_LED_FILE, 255);
         }
         if (blue >= 128) {
+            write_str(BLUE_TRIGGER_FILE, "none");
             write_int(BLUE_LED_FILE, 255);
         }
     }
@@ -239,7 +302,6 @@ set_light_attention(struct light_device_t* dev,
     pthread_mutex_unlock(&g_lock);
     return 0;
 }
-
 
 /** Close the lights device */
 static int

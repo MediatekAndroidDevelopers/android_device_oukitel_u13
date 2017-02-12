@@ -417,8 +417,14 @@ on boot
     chown system system /sys/class/leds/keyboard-backlight/trigger
     chown system system /sys/class/leds/jogball-backlight/trigger
     chown system system /sys/class/leds/red/trigger
+    chown system system /sys/class/leds/red/delay_on
+    chown system system /sys/class/leds/red/delay_off
     chown system system /sys/class/leds/green/trigger
+    chown system system /sys/class/leds/green/delay_on
+    chown system system /sys/class/leds/green/delay_off
     chown system system /sys/class/leds/blue/trigger
+    chown system system /sys/class/leds/blue/delay_on
+    chown system system /sys/class/leds/blue/delay_off
 
     # HMP CPU hotplug strategy
     chown system system /proc/hps/num_base_perf_serv
