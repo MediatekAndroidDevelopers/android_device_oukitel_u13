@@ -59,6 +59,7 @@ TARGET_USERIMAGES_USE_EXT4 := true
 # Include needed symbols
 TARGET_INCLUDE_XLOG_SYMBOLS := true
 TARGET_INCLUDE_AUDIO_SYMBOLS := true
+include vendor/mad/config/symbols.mk
 
 # Display
 TARGET_SCREEN_HEIGHT := 1920
