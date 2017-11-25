@@ -48,7 +48,11 @@ PRODUCT_COPY_FILES += \
 
 # Fingerprint
 PRODUCT_PACKAGES += \
-    fingerprintd
+    android.hardware.biometrics.fingerprint@2.1-service
+
+# IR
+PRODUCT_PACKAGES += \
+    android.hardware.ir@1.0-impl
 
 # Permissions
 PRODUCT_COPY_FILES += \
