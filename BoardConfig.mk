@@ -43,6 +43,8 @@ TARGET_KERNEL_CONFIG := hct6753_66_m0_defconfig
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
 MTK_APPENDED_DTB_SUPPORT := yes
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
+LZMA_RAMDISK_TARGETS := boot,recovery
+BOARD_USES_FULL_RECOVERY_IMAGE := true
 
 # Partitions ### cat /proc/partitions multiply with 1024
 BOARD_BOOTIMAGE_PARTITION_SIZE := 16777216
