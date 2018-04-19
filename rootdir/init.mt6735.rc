@@ -31,9 +31,10 @@ on post-fs
     mkdir /nvdata/md     0770 nvram nvram
     mkdir /nvdata/md_cmn 0770 nvram nvram
     mkdir /nvdata/media  0775 nvram nvram
-    # Kernel (root) needs access to these 2 files
+    # Kernel (root) needs access to these 3 files
     chown root nvram /nvdata/APCFG/APRDEB/WIFI
     chown root nvram /nvdata/APCFG/APRDEB/WIFI_CUSTOM
+    chown root nvram /nvdata/APCFG/APRDEB/CUSTOM1
     # Audio settings
     chown system nvram /nvdata/APCFG/APRDCL/FILE_VER
     chown system nvram /nvdata/media/Audio_ver1_Vol_custom
